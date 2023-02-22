@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+  elasticsearch:
+    image: elasticsearch:7.13.3
+    privileged: true
+    environment:
+      - "cluster.name=elasticsearch"
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms16g -Xmx16g"
+      - "bootstrap.memory_lock=true"
+      - "xpack.security.enabled=false"
+    volumes:
+      - ./es/plugins:/usr/share/elasticsearch/plugins
+      - ./es/data:/usr/share/elasticsearch/data:rw
+      - ./es/logs:/user/share/elasticsearch/logs:rw
+    ports:
+      - 9201:9200
+      - 9301:9300
+    deploy:
+     resources:
+        limits:
+           cpus: "6"
+           memory: 20G
+        reservations:
+           memory: 8G
+  kibana:
+    image: kibana:7.13.3
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      I18N_LOCALE: zh-CN
+    ports:
+      - 5602:5601

@@ -1,0 +1,144 @@
+version: "3.9"
+
+services:
+  es00:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - ./esdata00:/usr/share/elasticsearch/data
+    ports:
+      - ${ES_PORT}:9200
+      - 9300:9300
+    extra_hosts:
+      - "esn00:192.168.31.55"
+      - "esn02:192.168.31.55"
+      - "esn03:192.168.31.55"
+    environment:
+      - node.name=esn00
+      - cluster.name=${CLUSTER_NAME}
+      - transport.port=9300
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+      - "indices.memory.index_buffer_size=1g"
+      - network.publish_host=192.168.31.55
+      - cluster.initial_master_nodes=192.168.31.55:9300,192.168.31.55:9302,192.168.31.55:9303
+      - discovery.seed_hosts=192.168.31.55:9302,192.168.31.55:9303
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fs  http://127.0.0.1:9200 || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  es02:
+    depends_on:
+      - es00
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    ports:
+      - 9202:9200
+      - 9302:9302
+    extra_hosts:
+      - "esn00:192.168.31.55"
+      - "esn02:192.168.31.55"
+      - "esn03:192.168.31.55"
+    volumes:
+      - ./esdata02:/usr/share/elasticsearch/data
+    environment:
+      - node.name=esn02
+      - cluster.name=${CLUSTER_NAME}
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+      - "indices.memory.index_buffer_size=1g"
+      - transport.port=9302
+      - network.publish_host=192.168.31.55
+      - cluster.initial_master_nodes=192.168.31.55:9300,192.168.31.55:9302,192.168.31.55:9303
+      - discovery.seed_hosts=192.168.31.55:9300,192.168.31.55:9303
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fs  http://127.0.0.1:9200 || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  es03:
+    depends_on:
+      - es02
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    ports:
+      - 9203:9200
+      - 9303:9303
+    extra_hosts:
+      - "esn00:192.168.31.55"
+      - "esn02:192.168.31.55"
+      - "esn03:192.168.31.55"
+    volumes:
+      - ./esdata03:/usr/share/elasticsearch/data
+    environment:
+      - node.name=esn03
+      - cluster.name=${CLUSTER_NAME}
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+      - "indices.memory.index_buffer_size=1g"
+      - transport.port=9303
+      - network.publish_host=192.168.31.55
+      - cluster.initial_master_nodes=192.168.31.55:9300,192.168.31.55:9302,192.168.31.55:9303
+      - discovery.seed_hosts=192.168.31.55:9300,192.168.31.55:9302
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fs  http://127.0.0.1:9200 || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  kibana:
+    depends_on:
+      es00:
+        condition: service_healthy
+      es02:
+        condition: service_healthy
+      es03:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    volumes:
+      - ./kibanadata:/usr/share/kibana/data
+    ports:
+      - ${KIBANA_PORT}:5601
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=http://192.168.31.55:9200
+    mem_limit: ${MEM_LIMIT}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fs  http://127.0.0.1:5601 || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120

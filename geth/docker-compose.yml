@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  geth:
+    image: "ethereum/client-go:v1.10.25"
+    volumes:
+      - ./ethdata:/root
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+      - "8551:8551"
+      - "30303:30303"
+    command: ["--http","--http.addr","0.0.0.0","--ws", "--ws.addr","0.0.0.0","--ws.origins", "*","--mainnet", "--syncmode", "snap", "--cache","2048","--txlookuplimit", "0", "--authrpc.addr=0.0.0.0"]
+  lhfast:
+    image: "sigp/lighthouse:v3.1.0"
+    volumes:
+      - ./lighthouse-fast:/root
+    ports:
+      - "9990:9000"
+    command: ["lighthouse", "beacon","--network","mainnet", "--execution-jwt", "/root/.lighthouse/jwtsecret", "--execution-endpoint", "http://192.168.31.55:8551", "--checkpoint-sync-url", "https://beaconstate.info"]
