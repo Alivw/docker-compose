@@ -1,3 +1,7 @@
+---
+
+---
+
 # mysql 配置
 
 1. 在 **./mysql/conf** 目录下 新建  **custom.conf** 并写入内容
@@ -9,4 +13,5 @@
    cd ./mysql/conf && echo -e "[mysqld]\nskip-name-resolve" > custom.conf
    ```
 
-   
+
+![image-20230222140159018](https://cdn.jsdelivr.net/gh/Alivw/picgo/img/image-20230222140159018.png)
