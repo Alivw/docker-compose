@@ -6,8 +6,8 @@
    > skip-name-resolve
 
    ```shell
-   cd ./mysql/conf && echo -e "[mysqld]\nskip-name-resolve" > custom.cnf && cd ../../
+   echo -e "[mysqld]\nskip-name-resolve" > conf/custom.cnf
    ```
 
 
-![image-20230222140159018](https://cdn.jsdelivr.net/gh/Alivw/picgo/img/image-20230222140159018.png)
+![image-20230303105831436](readme/img/image-20230303105831436.png)
