@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  db:
+  mysql:
     image: mysql:8.0.21
     environment:
       TZ: Asia/Shanghai

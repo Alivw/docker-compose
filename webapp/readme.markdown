@@ -6,7 +6,7 @@
    > skip-name-resolve
 
    ```shell
-   echo -e "[mysqld]\nskip-name-resolve" > conf/custom.cnf
+   echo -e "[mysqld]\nskip-name-resolve" > mysql/conf/custom.cnf
    ```
 
 
