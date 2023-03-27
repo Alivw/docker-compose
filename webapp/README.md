@@ -35,12 +35,13 @@
 
 ## nginx 配置文件示例
 
-> # 将所有 /api 开头的请求，全部转发到 backend，并且去掉 /api前缀
->
-> location /api {
->   	rewrite ^/api(.*)$ $1 break;
->       proxy_set_header Host $host;
->       proxy_set_header X-Real-IP $remote_addr;
->       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
->   	proxy_pass http://backend;
->     }
+```nginx
+#将所有 /api 开头的请求，全部转发到 backend，并且去掉 /api前缀
+location /api {
+  	rewrite ^/api(.*)$ $1 break;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  	proxy_pass http://backend;
+}
+```
