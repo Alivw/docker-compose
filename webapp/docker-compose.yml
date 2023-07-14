@@ -32,6 +32,8 @@ services:
     command: server /data --console-address ":9001"
     volumes:
       - ./minio/data:/data
+    networks:
+      - net
 networks:
   net:
     driver: bridge
