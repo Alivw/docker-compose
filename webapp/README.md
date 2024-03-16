@@ -22,6 +22,14 @@ curl -qO https://mirror.ghproxy.com/https://raw.githubusercontent.com/zoowayss/d
 
 ![image-20230304123043499](readme/img/image-20230304123043499.png)
 
+# kafka
+
+   ```shell
+   # 启动
+   docker compose -f kafka.yml -p kafka up -d
+   # 删除
+   docker compose -p kafka down
+   ```
 # nginx
 
 ## nginx启动
